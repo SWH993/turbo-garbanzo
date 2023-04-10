@@ -1,0 +1,75 @@
+import time
+import random
+import os
+import datetime
+
+def benchmark1():
+    start_time = time.time()
+
+    for i in range(1000000):
+        x = (i**2)+1
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    return total_time
+
+def benchmark2():
+    start_time = time.time()
+
+    with open('turbo-garbanzo_testfile.txt', 'w') as f:
+        for i in range(1000000):
+            f.write(f"This is line {i+1}\n")
+        f.close()
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    return total_time
+
+def benchmark3():
+    start_time = time.time()
+
+    s = ''
+    for i in range(1000000):
+        s += str(i)
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    return total_time
+
+def dict_draw(x):
+    my_dict ={'1':benchmark1(), '2':benchmark2(), '3':benchmark3()}
+    for i in range(3):
+        return my_dict[x]
+
+def run_benchmark(num_runs):
+    total_time = 0.0
+    for i in range(num_runs):
+        print(f"Run {i+1}")
+        print(".")
+        total_time += dict_draw('1')
+        print(".")
+        total_time += dict_draw('2')
+        print(".")
+        total_time += dict_draw('3')
+        print(f"{i+1} test done!")
+        print(f"Elapsed time: {total_time:.2f} sec")
+    return total_time / num_runs
+
+if __name__ == "__main__":
+    num_runs = 3
+    average_time = run_benchmark(num_runs)
+    date = datetime.datetime.now()
+    
+    print(f"Average all-tests time: {average_time:.2f} sec")
+    
+    if os.path.isfile('turbo-garbanzo_testfile.txt'):
+        os.remove('turbo-garbanzo_testfile.txt')
+    else:
+        print("File remove error")
+        
+    with open('turbo-garbanzo_results.txt', 'a') as f:
+        f.write(f"\n@SWH993 trubo-garbanzo benchmark {date} result:\
+                \n\tAverage test time: {average_time:.2f} sec")
+        f.close()
+        
+    print(f"End test")
